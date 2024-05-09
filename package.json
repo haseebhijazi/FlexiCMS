@@ -2,9 +2,10 @@
   "name": "flexicms",
   "version": "1.0.0",
   "description": "a very rudimenatary headless CMS with extremely basic CRUD functionality",
+  "type": "module",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon src/index.js"
   },
   "keywords": [
     "node.js",
@@ -18,5 +19,8 @@
     "dbms"
   ],
   "author": "Haseeb Hijazi Khan",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
 }
