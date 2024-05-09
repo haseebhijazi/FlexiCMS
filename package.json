@@ -1,0 +1,22 @@
+{
+  "name": "flexicms",
+  "version": "1.0.0",
+  "description": "a very rudimenatary headless CMS with extremely basic CRUD functionality",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "node.js",
+    "react.js",
+    "cms",
+    "coding-style",
+    "know-hows",
+    "cms",
+    "backend",
+    "frontend",
+    "dbms"
+  ],
+  "author": "Haseeb Hijazi Khan",
+  "license": "ISC"
+}
