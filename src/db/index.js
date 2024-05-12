@@ -1,5 +1,8 @@
 import mysql from 'mysql2/promise'
 import { DB_NAME } from "../constants.js";
+import Sequelize from 'sequelize';
+import UserModel from '../models/users.model.js';
+import EntityModel from '../models/entities.model.js';
 
 const connectDB = async () => {
     try {
@@ -39,4 +42,18 @@ const setupDB = async () => {
     }
 }
 
+const sequelize = new Sequelize({
+    dialect: 'mysql',
+    host: `${process.env.DB_HOST}`,
+    username: `${process.env.DB_USER}`,
+    password: `${process.env.DB_PASSWORD}`,
+    database: `${DB_NAME}`
+})
+
+const User = UserModel(sequelize, Sequelize.DataTypes)
+const Entity = EntityModel(sequelize, Sequelize.DataTypes)
+
+await sequelize.sync()
+
 export default setupDB
+export { User, Entity }

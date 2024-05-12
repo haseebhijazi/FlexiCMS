@@ -1,5 +1,6 @@
 import dotenv from "dotenv"
 import setupDB from "./db/index.js";
+import { User, Entity } from './db/index.js'
 import {app} from "./app.js"
 dotenv.config({
     path: './env'
