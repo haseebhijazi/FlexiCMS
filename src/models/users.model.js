@@ -52,17 +52,15 @@ export default (sequelize, DataTypes) => {
         }
     })
 
-    sequelize.addHook('beforeCreate', async () => {
+    User.addHook('beforeCreate', async (user) => {
         user.hashed_password = await bcrypt.hash(user.hashed_password, 10);
     })
 
-    sequelize.addHook('beforeUpdate', async () => {
+    User.addHook('beforeUpdate', async (user) => {
         if (user.changed('hashed_password')) {
             user.hashed_password = await bcrypt.hash(user.hashed_password, 10);
         }
     })
-
-
 
     return User
 }
