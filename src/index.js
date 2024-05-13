@@ -31,6 +31,8 @@ async function startServer() {
     } catch (error) {
         console.log("🌐 MySQL Connection FAILED <src/index.js> : ", error)
     }
-}
+}+
+
+
 
 startServer();

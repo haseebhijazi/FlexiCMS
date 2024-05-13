@@ -1,3 +1,6 @@
+import bcrypt from "bcrypt"
+import jwt from "jsonwebtoken"
+
 export default (sequelize, DataTypes) => {
     const User = sequelize.define('User', {
         user_id: {
@@ -15,11 +18,51 @@ export default (sequelize, DataTypes) => {
             allowNull: false,
             unique: true
         },
-        fullname: {
+        hashed_password: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: false,
+        }
+    }, {
+        instanceMethods: {
+            async checkPassword(password) {
+                return await bcrypt.compare(password, this.hashed_password);
+            },
+
+            async generateAccessToken() {
+                return await jwt.sign({
+                    user_id: this.user_id,
+                    email: this.email,
+                    username: this.username,
+                }),
+                process.env.ACCESS_TOKEN_SECRET,
+                {
+                    expiresIn: process.env.ACCESS_TOKEN_EXPIRY
+                }
+            },
+
+            async generateRefreshToken() {
+                return await jwt.sign({
+                    user_id: this.user_id,
+                }),
+                process.env.REFRESH_TOKEN_SECRET,
+                {
+                    expiresIn: process.env.REFRESH_TOKEN_EXPIRY
+                }
+            }
         }
     })
+
+    sequelize.addHook('beforeCreate', async () => {
+        user.hashed_password = await bcrypt.hash(user.hashed_password, 10);
+    })
+
+    sequelize.addHook('beforeUpdate', async () => {
+        if (user.changed('hashed_password')) {
+            user.hashed_password = await bcrypt.hash(user.hashed_password, 10);
+        }
+    })
+
+
 
     return User
 }

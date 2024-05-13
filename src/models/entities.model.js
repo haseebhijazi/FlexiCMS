@@ -11,7 +11,8 @@ export default (sequelize, DataTypes) => {
         },
         entity_logical_name: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: false,
+            unique: true
         },
         entity_display_name: {
             type: DataTypes.STRING,
