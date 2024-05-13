@@ -13,8 +13,6 @@ const connectDB = async () => {
             database: `${DB_NAME}`
         })
         return pool
-        // const grantSql = `GRANT CREATE ON *.* TO ${process.env.DB_USER}@${process.env.DB_HOST};`
-        // await pool.execute(grantSql)
     } catch (error) {
         console.log("🌐 MySQL Connection Failed:", error)
         throw error

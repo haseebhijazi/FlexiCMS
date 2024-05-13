@@ -4,6 +4,23 @@ import { ApiResponse } from "../utils/apiResponse.js"
 import { User } from '../db/index.js'
 import Sequelize from "sequelize"
 
+const generateAccessAndRefreshTokens = async (user_id) => {
+    try {
+        const user = await User.findByPk(user_id)
+        const accessToken = await user.generateAccessToken()
+        const refreshToken = await user.generateRefreshToken()
+
+        user.accessToken = accessToken
+        user.refreshToken = refreshToken
+
+        await user.save({ validateBeforeSave: false })
+
+        return {accessToken, refreshToken}
+    } catch (error) {
+        throw new ApiError(500, "Tokens generation failed!")
+    }
+}
+
 const registerUser = asyncHandler( async (req, res) => {
     // fetch user details from the front-end
     const {username, email, hashed_password} = req.body
@@ -16,16 +33,15 @@ const registerUser = asyncHandler( async (req, res) => {
     }
 
     // check uniqueness
-    const existingUser = await User.findAll({
+    const existingUsers = await User.findAll({
         where: {
             [Sequelize.Op.or]: [{ username }, { email }]
         }
     })
-    if (existingUser.length > 0) {
+    if (existingUsers.length > 0) {
+        console.log("username: ", existingUsers.username)
         throw new ApiError(409, "User with this username or email already exists")
     }
-    console.log("username: ", username)
-    console.log("email: ", email)
 
     // create user object and insert in the db
     const user = await User.create({
@@ -33,21 +49,83 @@ const registerUser = asyncHandler( async (req, res) => {
         email: `${email}`,
         hashed_password: `${hashed_password}`
     })
+    console.log("username: ", user.username)
 
     // check user creation and remove sensitive data from the response (res)
     const createdUser = await User.findByPk(user.user_id, {
         atrributes: {
-            exclude: ['hashed_password']
+            exclude: ['hashed_password', 'refreshToken']
         }
     })
     if (!createdUser) {
         throw new ApiError(500, "User creation failed!")
     }
-    // return response (res)
 
+    // return response (res)
     return res.status(201).json(
-        new ApiResponse(200, createdUser, "User registered successfully!")
+        new ApiResponse(201, createdUser, "User registered successfully!")
     )
 })
 
-export { registerUser }
+const loginUser = asyncHandler( async (req, res) => {
+    // fetch user details from the front-end
+    const {username, email, hashed_password} = req.body
+
+    // validate the details
+    if (!username || !email) {
+        throw new ApiError(400, "Username or Email is required for login!")
+    }
+
+    // fetch user
+    const users = await User.findAll({
+        where: {
+            [Sequelize.Op.or]: [{ username }, { email }]
+        }
+    })
+
+    if (users.length === 0) {
+        throw new ApiError(404, "No user registered with such username or email!")
+    }
+
+    // authenticate
+    const user = users[0]
+    console.log("username: ", user.username);
+    const isPasswordValid = user.checkPassword(hashed_password)
+    if (!isPasswordValid) {
+        throw new ApiError(401, "Invalid credentials: username/email or password")
+    }
+
+    //tokens
+    const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user.user_id)
+
+    //cookies
+    const loggedInUser = await User.findByPk(user.user_id, {
+        atrributes: {
+            exclude: ['hashed_password', 'refreshToken']
+        }
+    })
+
+    const options = {
+        httpOnly: true,
+        secure: true
+    }
+
+    return res.status(200)
+    .cookie("accessToken", accessToken, options)
+    .cookie("refreshToken", refreshToken, options)
+    .json(
+        new ApiResponse(
+            200,
+            {
+                user: loggedInUser, accessToken, refreshToken
+
+            },
+            "User logged in sucessfully!"
+        )
+    )
+})
+
+export { 
+    registerUser, 
+    loginUser
+}
