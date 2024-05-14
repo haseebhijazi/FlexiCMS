@@ -72,7 +72,7 @@ const loginUser = asyncHandler( async (req, res) => {
     const {username, email, hashed_password} = req.body
 
     // validate the details
-    if (!username || !email) {
+    if (!username && !email) {
         throw new ApiError(400, "Username or Email is required for login!")
     }
 
@@ -107,7 +107,7 @@ const loginUser = asyncHandler( async (req, res) => {
 
     const options = {
         httpOnly: true,
-        secure: true
+        // secure: true
     }
 
     return res.status(200)
@@ -125,7 +125,32 @@ const loginUser = asyncHandler( async (req, res) => {
     )
 })
 
+const logoutUser = asyncHandler( async (req, res) => {
+    try {
+        const updatedRows = await User.update(
+            { refreshToken: null },
+            {
+                where: {
+                    user_id: req.user.user_id
+                },
+            },
+        );
+
+        if (updatedRows[0] === 0) {
+            throw new ApiError(500, "Failed to logout user");
+        }
+
+        return res.status(200)
+            .clearCookie("accessToken")
+            .clearCookie("refreshToken")
+            .json(new ApiResponse(200, {}, "User logged Out"));
+    } catch (error) {
+        throw new ApiError(500, error.message || "Failed to logout user");
+    }
+})
+
 export { 
     registerUser, 
-    loginUser
+    loginUser,
+    logoutUser
 }
