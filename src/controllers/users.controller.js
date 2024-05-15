@@ -30,7 +30,7 @@ const registerUser = asyncHandler( async (req, res) => {
     if (
         [username, email, hashed_password].some((field) => field?.trim() === "")
     ){
-        throw new ApiError(400, "Provide the necessary fields")
+        throw new ApiError(400, "Provide the necessary fields!")
     }
 
     // check uniqueness
@@ -41,7 +41,7 @@ const registerUser = asyncHandler( async (req, res) => {
     })
     if (existingUsers.length > 0) {
         console.log("username: ", existingUsers.username)
-        throw new ApiError(409, "User with this username or email already exists")
+        throw new ApiError(409, "User with this username or email already exists!")
     }
 
     // create user object and insert in the db
@@ -63,8 +63,13 @@ const registerUser = asyncHandler( async (req, res) => {
     }
 
     // return response (res)
-    return res.status(201).json(
-        new ApiResponse(201, createdUser, "User registered successfully!")
+    return res.status(201)
+    .json(
+        new ApiResponse(
+            201, 
+            createdUser, 
+            "User registered successfully!"
+        )
     )
 })
 
@@ -93,7 +98,7 @@ const loginUser = asyncHandler( async (req, res) => {
     console.log("username: ", user.username);
     const isPasswordValid = await user.checkPassword(hashed_password)
     if (!isPasswordValid) {
-        throw new ApiError(401, "Invalid credentials: username/email or password")
+        throw new ApiError(401, "Invalid credentials: username/email or password!")
     }
 
     //tokens
@@ -188,7 +193,7 @@ const refreshTheAccessToken = asyncHandler(async (req, res) => {
              )
         )
     } catch (error) {
-        throw new ApiError(401, error?.message || "Invalid refresh token!")
+        throw new ApiError(401, error?.message || "Invalid refresh token.")
     }
 })
 
@@ -196,15 +201,18 @@ const changePassword = asyncHandler(async (req, res) => {
     const { oldPassword, newPassword, confPassword } = req.body
 
     if (newPassword != confPassword) {
-        throw new ApiError(401, "Passwords do not match! ")
+        throw new ApiError(401, "Passwords do not match.")
     }
 
     const user = await User.findByPk(req?.user.user_id)
-    console.log("usrname:", user)
+    
+    if (!user) {
+        throw new ApiError(501, "Authentication issue! Try logging-in again.")
+    }
 
     const isPasswordValid = user.checkPassword(oldPassword)
     if (!isPasswordValid) {
-        throw new ApiError(400, "Invalid old password! ")
+        throw new ApiError(400, "Invalid old password.")
     }
 
     user.hashed_password = newPassword
@@ -214,7 +222,7 @@ const changePassword = asyncHandler(async (req, res) => {
     .json(new ApiResponse(
         200,
         {},
-        "Password has been changed successfully! "
+        "Password has been changed successfully!"
     ))
 })
 
@@ -222,7 +230,7 @@ const fetchCurrentUser = asyncHandler(async (req, res) => {
     const user = await User.findByPk(req?.user.user_id)
 
     if (!user) {
-        throw new ApiError(401, "User not authenticated");
+        throw new ApiError(401, "User not authenticated.");
     }
     return res.status(200)
     .json(new ApiResponse(
@@ -230,7 +238,7 @@ const fetchCurrentUser = asyncHandler(async (req, res) => {
         {
             user: user
         },
-        "Current user info fetched successfully! "
+        "Current user info fetched successfully!"
     ))
 })
 

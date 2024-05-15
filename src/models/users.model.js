@@ -52,6 +52,7 @@ export default (sequelize) => {
         }
     }, {
         sequelize,
+        freezeTableName: true,
         modelName: 'User',
         hooks: {
             beforeCreate: async (user) => {

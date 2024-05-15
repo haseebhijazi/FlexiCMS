@@ -54,4 +54,4 @@ const Entity = EntityModel(sequelize, Sequelize.DataTypes)
 await sequelize.sync()
 
 export default setupDB
-export { User, Entity }
+export { User, Entity, sequelize }

@@ -18,6 +18,8 @@ export default (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: false
         },
+    }, {
+        freezeTableName: true,
     })
 
     return Entity
