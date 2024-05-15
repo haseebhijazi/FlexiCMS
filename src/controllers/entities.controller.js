@@ -152,8 +152,59 @@ const renameEntity = asyncHandler( async (req, res) => {
     )
 })
 
+const deleteEntity = asyncHandler( async (req, res) => {
+    const { entityName } = req.body
+
+    if (!entityName) {
+        throw new ApiError(401, "Specify the entity name.")
+    }
+
+    const user = req?.user// from jwt
+    const user_id = user.user_id
+
+    const logicalEntityName = user.username + "_" + entityName
+    console.log("table: ", logicalEntityName)
+
+    const Entities = await Entity.findAll({
+        where: {
+            entity_logical_name: logicalEntityName,
+            user_id: user_id
+        }
+    })
+    if(Entities.length <= 0) {
+        throw new ApiError(401, "Entity does not exist for the user.")
+    }
+
+    const entity = Entities[0]
+
+    try {
+        await sequelize.query(`DROP TABLE ${logicalEntityName}`)
+    } catch (error) {
+        throw new ApiError(500, error.message || "Entity does not exist.")
+    }
+    
+    try {
+        await sequelize.query(`DELETE FROM Entity WHERE entities_id=${entity.entities_id}`)
+    } catch (error) {
+        throw new ApiError(500, error.message || "Entity does not exist.")
+    }
+
+    await entity.save({ validateBeforeSave: false })
+
+    return res.status(200)
+    .json(
+        new ApiResponse(
+            200,
+            {},
+            "Entities deleted successfully!"
+        )
+    )
+
+})
+
 export { 
     createEntity,
     readAllEntities,
-    renameEntity
+    renameEntity, 
+    deleteEntity
 }
