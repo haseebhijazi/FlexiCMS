@@ -7,6 +7,7 @@ import Sequelize from "sequelize"
 const createEntity = asyncHandler( async (req, res) => {
     const { entity_display_name, attributes } = req.body
 
+    // validate the data (attr will be validate internally later in the code)
     if (!entity_display_name) {
         throw new ApiError(401, "Entity name not specified.")
     }
@@ -16,7 +17,7 @@ const createEntity = asyncHandler( async (req, res) => {
 
     const user_id = req?.user.user_id // from jwt
 
-    // check entity_display_name unqueness for the given user
+    // check entity_display_name unqueness for the given user: User cannot have two tables with same name 
     const existingEntities = await Entity.findAll({
         where: {
             [Sequelize.Op.and]: [{ entity_display_name }, { user_id }]
@@ -28,7 +29,7 @@ const createEntity = asyncHandler( async (req, res) => {
 
     const entity_logical_name = req?.user.username + '_' + entity_display_name
 
-    // check entity_logical_name uniqueness in entire Entity Model
+    // check entity_logical_name uniqueness in entire Entity Model: it is a unique field in the database
     const entities = await Entity.findAll({
         where: {
             entity_logical_name: entity_logical_name
@@ -43,7 +44,7 @@ const createEntity = asyncHandler( async (req, res) => {
         const attr_name = attribute.name
         const attr_type = attribute.type
 
-        // checking for any null value 
+        // checking for any null value for each attribute
         if (!attr_name || !attr_type) {
             throw new ApiError(401, "Attributes not defined properly.")
         }
@@ -54,6 +55,8 @@ const createEntity = asyncHandler( async (req, res) => {
             type: Sequelize.DataTypes[attr_type] 
         }
     }
+
+    // table creation for the entity
     const tableName = entity_logical_name
     try {
         await sequelize.define(tableName, schema, {freezeTableName: true,}).sync({ force: false })
@@ -61,6 +64,7 @@ const createEntity = asyncHandler( async (req, res) => {
         throw new ApiError(500, error.message || "Failed to create a table for the Entity.")
     }
 
+    // store the mapping in the Entity table
     const createdEntity = await Entity.create({
         user_id: `${user_id}`,
         entity_logical_name: `${entity_logical_name}`,
@@ -80,4 +84,29 @@ const createEntity = asyncHandler( async (req, res) => {
     )
 })
 
-export { createEntity }
+
+const readAllEntities = asyncHandler( async (req, res) => {
+    const user = req?.user
+    if (!user) {
+        throw new ApiError(401, "User not authenticated.")
+    }
+
+    const entities = await Entity.findAll({
+        where: {
+            user_id: user.user_id
+        }
+    })
+
+    return res.status(200)
+    .json(
+        new ApiResponse(
+            200,
+            entities,
+            "Entities fetched successfully!"
+        )
+    )
+})
+export { 
+    createEntity,
+    readAllEntities
+}
