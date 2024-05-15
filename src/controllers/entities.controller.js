@@ -3,7 +3,6 @@ import { ApiError } from "../utils/apiError.js"
 import { ApiResponse } from "../utils/apiResponse.js"
 import { Entity, sequelize } from '../db/index.js'
 import Sequelize from "sequelize"
-// import QueryTypes from "sequelize"
 
 const createEntity = asyncHandler( async (req, res) => {
     const { entity_display_name, attributes } = req.body
@@ -21,7 +20,8 @@ const createEntity = asyncHandler( async (req, res) => {
     // check entity_display_name unqueness for the given user: User cannot have two tables with same name 
     const existingEntities = await Entity.findAll({
         where: {
-            [Sequelize.Op.and]: [{ entity_display_name }, { user_id }]
+            entity_display_name: entity_display_name , 
+            user_id: user_id
         }
     })
     if (existingEntities.length > 0) {
@@ -60,7 +60,7 @@ const createEntity = asyncHandler( async (req, res) => {
     // table creation for the entity
     const tableName = entity_logical_name
     try {
-        await sequelize.define(tableName, schema, {freezeTableName: true,}).sync({ force: false })
+        await sequelize.define(tableName, schema, {freezeTableName: true,timestamps: false,}).sync({ force: false })
     } catch (error) {
         throw new ApiError(500, error.message || "Failed to create a table for the Entity.")
     }

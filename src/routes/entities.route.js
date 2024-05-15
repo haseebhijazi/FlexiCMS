@@ -10,12 +10,4 @@ router.route("/rename-entity").put(verifyJWT, renameEntity)                 // U
 // updating schema of an Entity does not make sense, as it will anyways be "drop and create" (routes exist)
 router.route("/delete-entity").post(verifyJWT, deleteEntity)                // Delete Entity of logged-in user
 
-
-// for Entity name update we might have a route though
-
-// router.route("/insert-row").post(insertRow) // Create
-// router.route("/read-rows").get(readRows)    // Read
-// router.route("/update-row").post(updateRow) // Update
-// router.route("/delete-row").post(deleteRow) // Delete
-
 export default router
