@@ -3,6 +3,7 @@ import { ApiError } from "../utils/apiError.js"
 import { ApiResponse } from "../utils/apiResponse.js"
 import { Entity, sequelize } from '../db/index.js'
 import Sequelize from "sequelize"
+// import QueryTypes from "sequelize"
 
 const createEntity = asyncHandler( async (req, res) => {
     const { entity_display_name, attributes } = req.body
@@ -106,7 +107,53 @@ const readAllEntities = asyncHandler( async (req, res) => {
         )
     )
 })
+
+const renameEntity = asyncHandler( async (req, res) => {
+    const { oldEntityName, newEntityName } = req.body
+
+    if (!oldEntityName || !newEntityName) {
+        throw new ApiError(401, "Specify the names.")
+    }
+
+    const user = req?.user// from jwt
+    const user_id = user.user_id
+
+    const oldLogicalEntityName = user.username + "_" + oldEntityName
+    const newLogicalEntityName = user.username + "_" + newEntityName
+
+    const Entities = await Entity.findAll({
+        where: {
+            entity_logical_name: oldLogicalEntityName,
+            user_id: user_id
+        }
+    })
+    if(Entities.length <= 0) {
+        throw new ApiError(401, "Entity does not exist for the user.")
+    }
+
+    try {
+        await sequelize.query(`RENAME TABLE ${oldLogicalEntityName} TO ${newLogicalEntityName}`)
+    } catch (error) {
+        throw new ApiError(500, error.message || "Entity does not exist.")
+    }
+
+    const entity = Entities[0]
+    entity.entity_display_name = newEntityName
+    entity.entity_logical_name = newLogicalEntityName
+    await entity.save({ validateBeforeSave: false })
+
+    return res.status(200)
+    .json(
+        new ApiResponse(
+            200,
+            {},
+            "Entities renamed successfully!"
+        )
+    )
+})
+
 export { 
     createEntity,
-    readAllEntities
+    readAllEntities,
+    renameEntity
 }

@@ -9,7 +9,7 @@ router.route("/login").post(loginUser)
 router.route("/change-password").post(verifyJWT, changePassword)
 router.route("/user").get(verifyJWT, fetchCurrentUser)
 
-router.route("/logout").post(verifyJWT, logoutUser)
+router.route("/logout").get(verifyJWT, logoutUser)
 router.route("/refresh-token").post(refreshTheAccessToken) 
 
 export default router
