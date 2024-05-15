@@ -23,7 +23,7 @@ const insertRow = asyncHandler( async (req, res) => {
 
     const entities = await Entity.findAll({
         where: {
-            entity_display_name: entity_display_name , 
+            entity_display_name: entity_display_name, 
             user_id: user_id
         }
     })
@@ -67,6 +67,47 @@ const insertRow = asyncHandler( async (req, res) => {
     )
 })
 
+const readRows = asyncHandler( async (req, res) => {
+    const { entity_display_name } = req.body
+
+    if (!entity_display_name) {
+        throw new ApiError(401, "Entity Name not provided.")
+    }
+
+    const user = req?.user // from jwt
+    if (!user) {
+        throw new ApiError(401, "Unauthorized Access.")
+    }
+    const user_id = user.user_id
+
+    const entities = await Entity.findAll({
+        where: {
+            entity_display_name: entity_display_name, 
+            user_id: user_id
+        }
+    })
+    if (entities.length <= 0) {
+        throw new ApiError(409, "Entity with this name does not exist for the user.")
+    }
+
+    const entity_logical_name = user.username + '_' + entity_display_name
+
+    try {
+        const rows = await sequelize.query(`SELECT * FROM ${entity_logical_name}`)
+        return res.status(200)
+        .json( 
+            new ApiResponse(
+                200,
+                rows,
+                "Rows fetched successfully!"
+            )
+        )
+    } catch (error) {
+        throw new ApiError(500, error.message || "Error fetching rows.")
+    }
+})
+
 export {  
-    insertRow
+    insertRow, 
+    readRows
 }
