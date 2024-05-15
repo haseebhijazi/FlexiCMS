@@ -91,7 +91,7 @@ const loginUser = asyncHandler( async (req, res) => {
     // authenticate
     const user = users[0]
     console.log("username: ", user.username);
-    const isPasswordValid = user.checkPassword(hashed_password)
+    const isPasswordValid = await user.checkPassword(hashed_password)
     if (!isPasswordValid) {
         throw new ApiError(401, "Invalid credentials: username/email or password")
     }
@@ -119,7 +119,6 @@ const loginUser = asyncHandler( async (req, res) => {
             200,
             {
                 user: loggedInUser, accessToken, refreshToken
-
             },
             "User logged in sucessfully!"
         )
@@ -193,9 +192,53 @@ const refreshTheAccessToken = asyncHandler(async (req, res) => {
     }
 })
 
+const changePassword = asyncHandler(async (req, res) => {
+    const { oldPassword, newPassword, confPassword } = req.body
+
+    if (newPassword != confPassword) {
+        throw new ApiError(401, "Passwords do not match! ")
+    }
+
+    const user = await User.findByPk(req?.user.user_id)
+    console.log("usrname:", user)
+
+    const isPasswordValid = user.checkPassword(oldPassword)
+    if (!isPasswordValid) {
+        throw new ApiError(400, "Invalid old password! ")
+    }
+
+    user.hashed_password = newPassword
+    await user.save({ validateBeforeSave: false })
+
+    return res.status(200)
+    .json(new ApiResponse(
+        200,
+        {},
+        "Password has been changed successfully! "
+    ))
+})
+
+const fetchCurrentUser = asyncHandler(async (req, res) => {
+    const user = await User.findByPk(req?.user.user_id)
+
+    if (!user) {
+        throw new ApiError(401, "User not authenticated");
+    }
+    return res.status(200)
+    .json(new ApiResponse(
+        200,
+        {
+            user: user
+        },
+        "Current user info fetched successfully! "
+    ))
+})
+
 export { 
     registerUser, 
     loginUser,
     logoutUser,
-    refreshTheAccessToken
+    refreshTheAccessToken,
+    changePassword,
+    fetchCurrentUser
 }
