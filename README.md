@@ -4,4 +4,6 @@
 
 prettier, cookies, encryption, jwt, middlewares, error checking
 
-for cleaning db => use clean_db.sh
+for pre-cleaning or setting up db => use setup.sh
+
+sudo npm run dev

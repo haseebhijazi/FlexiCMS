@@ -7,6 +7,10 @@ export MYSQL_PWD="$DB_PASSWORD"
 user="$DB_USER"
 db="flexicms"
 
+echo "Creating $db Database (if not existing)..."
+mysql -u $user -e "CREATE DATABASE IF NOT EXISTS $db"
+echo "Creating $db successfully!"
+
 tables=$(mysql -u $user -Nse 'SHOW TABLES' $db)
 
 for table in $tables; do
@@ -14,4 +18,4 @@ for table in $tables; do
     mysql -u $user -e "DROP TABLE $table" $db
 done
 
-echo "All tables dropped from $db."
+echo "Pre-cleaning: All tables dropped from $db."

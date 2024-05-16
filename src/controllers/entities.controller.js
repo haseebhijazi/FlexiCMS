@@ -16,6 +16,10 @@ const createEntity = asyncHandler(async (req, res) => {
         throw new ApiError(401, "Specify at least one attribute.")
     }
 
+    if (entity_display_name.startsWith('_')) {
+        throw new ApiError(403, "Table name starts with an (_)")
+    }
+    console.log("The username ends with an underscore.");
     const user_id = req?.user.user_id // from JWT
 
     // Check entity_display_name uniqueness for the given user

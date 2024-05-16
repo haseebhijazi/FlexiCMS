@@ -33,6 +33,10 @@ const registerUser = asyncHandler( async (req, res) => {
         throw new ApiError(400, "Provide the necessary fields!")
     }
 
+    if (username.endsWith('_')) {
+        throw new ApiError(403, "Username ends with an underscore (_)")
+    }
+
     // check uniqueness
     const existingUsers = await User.findAll({
         where: {
