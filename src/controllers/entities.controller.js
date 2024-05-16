@@ -5,18 +5,18 @@ import { Entity, sequelize } from '../db/index.js'
 import Sequelize from "sequelize"
 
 const createEntity = asyncHandler(async (req, res) => {
-    const { entity_display_name, attributes } = req.body;
+    const { entity_display_name, attributes } = req.body
 
     // Validate the data
     if (!entity_display_name) {
-        throw new ApiError(401, "Entity name not specified.");
+        throw new ApiError(401, "Entity name not specified.")
     }
 
     if (!attributes || Object.keys(attributes).length === 0) {
-        throw new ApiError(401, "Specify at least one attribute.");
+        throw new ApiError(401, "Specify at least one attribute.")
     }
 
-    const user_id = req?.user.user_id; // from JWT
+    const user_id = req?.user.user_id // from JWT
 
     // Check entity_display_name uniqueness for the given user
     const existingEntities = await Entity.findAll({
@@ -24,12 +24,12 @@ const createEntity = asyncHandler(async (req, res) => {
             entity_display_name: entity_display_name,
             user_id: user_id
         }
-    });
+    })
     if (existingEntities.length > 0) {
-        throw new ApiError(409, "Entities with the same name exist for the user.");
+        throw new ApiError(409, "Entities with the same name exist for the user.")
     }
 
-    const entity_logical_name = req?.user.username + '_' + entity_display_name;
+    const entity_logical_name = req?.user.username + '_' + entity_display_name
 
     // Check entity_logical_name uniqueness in entire Entity model
     const entities = await Entity.findAll({
@@ -38,14 +38,14 @@ const createEntity = asyncHandler(async (req, res) => {
         }
     });
     if (entities.length > 0) {
-        throw new ApiError(502, "Failed to create the entity.");
+        throw new ApiError(502, "Failed to create the entity.")
     }
 
     const schema = {};
     for (const [attr_name, attr_type] of Object.entries(attributes)) {
         // Check for any null value for each attribute
         if (!attr_name || !attr_type) {
-            throw new ApiError(401, "Attributes not defined properly.");
+            throw new ApiError(401, "Attributes not defined properly.")
         }
 
         schema[attr_name] = {
@@ -56,11 +56,11 @@ const createEntity = asyncHandler(async (req, res) => {
     }
 
     // Table creation for the entity
-    const tableName = entity_logical_name;
+    const tableName = entity_logical_name
     try {
-        await sequelize.define(tableName, schema, { freezeTableName: true, timestamps: false }).sync({ force: false });
+        await sequelize.define(tableName, schema, { freezeTableName: true, timestamps: false }).sync({ force: false })
     } catch (error) {
-        throw new ApiError(500, error.message || "Failed to create a table for the Entity.");
+        throw new ApiError(500, error.message || "Failed to create a table for the Entity.")
     }
 
     // Store the mapping in the Entity table
@@ -70,7 +70,7 @@ const createEntity = asyncHandler(async (req, res) => {
         entity_display_name: `${entity_display_name}`
     });
     if (!createdEntity) {
-        throw new ApiError(500, "Entity Creation failed.");
+        throw new ApiError(500, "Entity Creation failed.")
     }
 
     return res.status(200).json(
