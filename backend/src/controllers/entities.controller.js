@@ -55,7 +55,7 @@ const createEntity = asyncHandler(async (req, res) => {
         schema[attr_name] = {
             // Assuming attr_type (attribute.type) from front-end matches Sequelize data types.
             // Best way is to force the types by drop-down menu or something similar
-            type: Sequelize.DataTypes[attr_type.toUpperCase()] 
+            type: Sequelize.DataTypes[attr_type] 
         };
     }
 

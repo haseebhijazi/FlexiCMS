@@ -36,6 +36,8 @@ function ResponsiveAppBar() {
     setAnchorElUser(null);
     if (setting === 'Logout') {
       handleLogout();
+    } else if (setting === 'Change Password') {
+      handleChangePassword();
     }
   };
 
@@ -56,12 +58,18 @@ function ResponsiveAppBar() {
     };
 
     try {
-      const response = await axios.get('http://localhost:8000/api/v1/users/logout', { headers });
-      // Handle successful logout, e.g., redirect to login page
+      await axios.get('http://localhost:8000/api/v1/users/logout', { headers });
+      // Clear the token from local storage
+      localStorage.removeItem('token');
+      // Redirect to the login page
       window.location.href = '/login';
     } catch (error) {
       console.error('There was an error logging out!', error);
     }
+  };
+
+  const handleChangePassword = () => {
+    window.location.href = '/change-password';
   };
 
   return (
