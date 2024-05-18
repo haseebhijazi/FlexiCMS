@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import Header from './Header'
 
 const ChangePasswordForm = () => {
   const [oldPassword, setOldPassword] = useState('');
@@ -40,7 +41,9 @@ const ChangePasswordForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <div>
+        <Header />
+        <form onSubmit={handleSubmit}>
       <div>
         <label htmlFor="oldPassword">Old Password:</label>
         <input
@@ -73,6 +76,7 @@ const ChangePasswordForm = () => {
       </div>
       <button type="submit">Change Password</button>
     </form>
+    </div>
   );
 };
 

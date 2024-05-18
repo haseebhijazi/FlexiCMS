@@ -9,16 +9,6 @@ const darkTheme = createTheme({
   },
 });
 
-// const columns = [
-//   { field: 'id', headerName: 'ID', width: 140 },
-//   { field: 'entities_id', headerName: 'Entity ID', width: 140},
-//   { field: 'entity_display_name', headerName: 'Entity', width: 500 },
-// ];
-
-// const rows = [
-//   { id: 1, entities_id: 1, entity_display_name: 'Haseeb'},
-// ];
-
 export default function DataTable(props) {
   return (
     <ThemeProvider theme={darkTheme}>
