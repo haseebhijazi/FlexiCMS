@@ -6,6 +6,7 @@ import LogIn from './components/Login.jsx';
 import Home from './components/Home.jsx';
 import Dashboard from './components/Dashboard.jsx'
 import ProtectedRoute from './components/ProtectedRoute.jsx';
+import EntityForm from './components/EntityForm.jsx';
 
 function App() {
 
@@ -16,6 +17,7 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/login" element={<LogIn />} />
         <Route path="/dashboard" element={<ProtectedRoute> <Dashboard /> </ProtectedRoute>} />
+        <Route path="/create-entity" element={<ProtectedRoute> <EntityForm /> </ProtectedRoute>} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
 

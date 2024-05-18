@@ -35,7 +35,7 @@ function Dashboard() {
                     entity_display_name: item.entity_display_name
                 }));
 
-                console.log(extractedData);
+                // console.log(extractedData);
 
                 setExtractedData(extractedData);
             } catch (error) {

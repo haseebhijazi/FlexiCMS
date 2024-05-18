@@ -35,6 +35,10 @@ function ResponsiveAppBar() {
     setAnchorElUser(null);
   };
 
+  const handleCreateClick = () => {
+    window.location.href = '/create-entity'; 
+  };
+
   return (
     <AppBar position="fixed">
       <Container maxWidth="xl">
@@ -44,7 +48,7 @@ function ResponsiveAppBar() {
             variant="h6"
             noWrap
             component="a"
-            href="#app-bar-with-responsive-menu"
+            href="/"
             sx={{
               mr: 2,
               display: { xs: 'none', md: 'flex' },
@@ -55,7 +59,7 @@ function ResponsiveAppBar() {
               textDecoration: 'none',
             }}
           >
-            LOGO
+            Flexi CMS
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -99,7 +103,7 @@ function ResponsiveAppBar() {
             variant="h5"
             noWrap
             component="a"
-            href="#app-bar-with-responsive-menu"
+            href="#"
             sx={{
               mr: 2,
               display: { xs: 'flex', md: 'none' },
@@ -117,7 +121,7 @@ function ResponsiveAppBar() {
             {pages.map((page) => (
               <Button
                 key={page}
-                onClick={handleCloseNavMenu}
+                onClick={handleCreateClick} // Change onClick event handler
                 sx={{ my: 2, color: 'white', display: 'block' }}
               >
                 {page}
