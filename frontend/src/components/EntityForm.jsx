@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-
+import Header from './Header'
 const DynamicForm = () => {
   const [entityDisplayName, setEntityDisplayName] = useState('');
   const [attributes, setAttributes] = useState([{ name: '', type: 'STRING' }]);
@@ -57,6 +57,7 @@ const DynamicForm = () => {
 
   return (
     <div>
+        <Header />
       <h2>Dynamic Form</h2>
       <form onSubmit={handleSubmit}>
         <div>
