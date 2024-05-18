@@ -12,6 +12,7 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
+import axios from 'axios';
 
 const pages = ['Create'];
 const settings = ['Change Password', 'Logout'];
@@ -31,12 +32,36 @@ function ResponsiveAppBar() {
     setAnchorElNav(null);
   };
 
-  const handleCloseUserMenu = () => {
+  const handleCloseUserMenu = (setting) => {
     setAnchorElUser(null);
+    if (setting === 'Logout') {
+      handleLogout();
+    }
   };
 
   const handleCreateClick = () => {
     window.location.href = '/create-entity'; 
+  };
+
+  const handleLogout = async () => {
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+      console.error('No token found in local storage');
+      return;
+    }
+
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+
+    try {
+      const response = await axios.get('http://localhost:8000/api/v1/users/logout', { headers });
+      // Handle successful logout, e.g., redirect to login page
+      window.location.href = '/login';
+    } catch (error) {
+      console.error('There was an error logging out!', error);
+    }
   };
 
   return (
@@ -152,7 +177,7 @@ function ResponsiveAppBar() {
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                <MenuItem key={setting} onClick={() => handleCloseUserMenu(setting)}>
                   <Typography textAlign="center">{setting}</Typography>
                 </MenuItem>
               ))}
@@ -163,4 +188,5 @@ function ResponsiveAppBar() {
     </AppBar>
   );
 }
+
 export default ResponsiveAppBar;
