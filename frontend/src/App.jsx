@@ -8,6 +8,7 @@ import Dashboard from './components/Dashboard.jsx'
 import ProtectedRoute from './components/ProtectedRoute.jsx';
 import EntityForm from './components/EntityForm.jsx';
 import ChangePasswordForm from './components/ChangePasswordForm.jsx';
+import EntityDashboard from './components/EntityDashboard.jsx';
 
 function App() {
 
@@ -20,6 +21,7 @@ function App() {
         <Route path="/dashboard" element={<ProtectedRoute> <Dashboard /> </ProtectedRoute>} />
         <Route path="/create-entity" element={<ProtectedRoute> <EntityForm /> </ProtectedRoute>} />
         <Route path="/change-password" element={<ProtectedRoute> <ChangePasswordForm /> </ProtectedRoute>} />
+        <Route path="/entity/:entity_display_name" element={ <EntityDashboard /> } />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
 

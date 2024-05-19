@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom'; // Import Link
 import Header from './Header';
 import Table from './Table';
 
@@ -8,7 +9,13 @@ function Dashboard() {
     const columns = [
         { field: 'id', headerName: 'ID', width: 140 },
         { field: 'entities_id', headerName: 'Entity ID', width: 140},
-        { field: 'entity_display_name', headerName: 'Entity', width: 500 },
+        { field: 'entity_display_name', headerName: 'Entity', width: 500, renderCell: (params) => { // Render entity_display_name as a Link
+            return (
+                <div>
+                    <Link to={`/entity/${params.row.entity_display_name}`}>{params.row.entity_display_name}</Link>
+                </div>
+            );
+        }},
         { field: 'actions', headerName: 'Actions', width: 200, renderCell: (params) => {
             return (
                 <div>
