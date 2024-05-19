@@ -35,6 +35,31 @@ function EntityDashboard() {
         }
     };
 
+    const deleteRow = async (rowId) => {
+        try {
+            const token = localStorage.getItem('token');
+            const headers = {
+                Authorization: `Bearer ${token}`,
+            };
+
+            const response = await axios({
+                method: 'post',
+                url: 'http://localhost:8000/api/v1/rows/delete-row',
+                headers: headers,
+                data: {
+                    entity_display_name: entity_display_name,
+                    row_id: rowId,
+                },
+            });
+
+            // After successful deletion, fetch rows again to reflect changes
+            fetchRows();
+
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
     const tableStyle = {
         width: '100%',
         borderCollapse: 'collapse',
@@ -64,6 +89,7 @@ function EntityDashboard() {
                         {rows.length > 0 && Object.keys(rows[0]).map((key) => (
                             <th key={key} style={thStyle}>{key}</th>
                         ))}
+                        <th style={thStyle}>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -72,6 +98,9 @@ function EntityDashboard() {
                             {Object.values(row).map((value, idx) => (
                                 <td key={idx} style={tdStyle}>{value}</td>
                             ))}
+                            <td>
+                                <button onClick={() => deleteRow(row.id)}>Delete</button>
+                            </td>
                         </tr>
                     ))}
                 </tbody>
