@@ -73,7 +73,7 @@ export default function LogIn() {
               fullWidth
               name="hashed_password"
               label="Password"
-              type="hashed_password"
+              type="password"
               id="hashed_password"
               autoComplete="current-hashed_password"
               onChange={handleChange}
