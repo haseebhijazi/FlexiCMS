@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom'; // Import Link
+import { useParams, Link } from 'react-router-dom';
 import Header from './Header';
 import axios from 'axios';
 import Button from './Button';
+import '@fortawesome/fontawesome-free/css/all.min.css';
 
 function EntityDashboard() {
     const { entity_display_name } = useParams();
@@ -29,7 +30,6 @@ function EntityDashboard() {
             });
 
             setRows(response.data.data[0]);
-
         } catch (error) {
             console.error(error);
         }
@@ -42,7 +42,7 @@ function EntityDashboard() {
                 Authorization: `Bearer ${token}`,
             };
 
-            const response = await axios({
+            await axios({
                 method: 'post',
                 url: 'http://localhost:8000/api/v1/rows/delete-row',
                 headers: headers,
@@ -54,58 +54,53 @@ function EntityDashboard() {
 
             // After successful deletion, fetch rows again to reflect changes
             fetchRows();
-
         } catch (error) {
             console.error(error);
         }
     };
 
-    const tableStyle = {
-        width: '100%',
-        borderCollapse: 'collapse',
-        margin: '20px 0',
-    };
-
-    const thStyle = {
-        border: '1px solid #dddddd',
-        padding: '8px',
-        backgroundColor: '#333',
-        color: 'white',
-    };
-
-    const tdStyle = {
-        border: '1px solid #dddddd',
-        padding: '8px',
-    };
-
     return (
-        <div>
+        <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white font-sans">
             <Header />
-            <h1>EntityDashboard: {entity_display_name}</h1>
-            <Button text="Insert Row" goto={`/insert-row/${entity_display_name}`} />
-            <table style={tableStyle}>
-                <thead>
-                    <tr>
-                        {rows.length > 0 && Object.keys(rows[0]).map((key) => (
-                            <th key={key} style={thStyle}>{key}</th>
-                        ))}
-                        <th style={thStyle}>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {rows.map((row, index) => (
-                        <tr key={index}>
-                            {Object.values(row).map((value, idx) => (
-                                <td key={idx} style={tdStyle}>{value}</td>
+            <div className="container mx-auto px-4 py-8">
+                <h1 className="text-3xl font-bold mb-8 mt-16">Entity Dashboard: {entity_display_name}</h1>
+                <table className="w-full border-collapse mb-8">
+                    <thead>
+                        <tr>
+                            {rows.length > 0 && Object.keys(rows[0]).map((key) => (
+                                <th key={key} className="border border-gray-700 px-4 py-2 bg-gray-800">{key}</th>
                             ))}
-                            <td>
-                                <button onClick={() => deleteRow(row.id)}>Delete</button>
-                                <Link to={`/update-row/${entity_display_name}/${row.id}`}>Update</Link> {/* Update button */}
-                            </td>
+                            <th className="border border-gray-700 px-4 py-2 bg-gray-800">Actions</th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {rows.map((row, index) => (
+                            <tr key={index} className="hover:bg-gray-800">
+                                {Object.values(row).map((value, idx) => (
+                                    <td key={idx} className="border border-gray-700 px-4 py-2">{value}</td>
+                                ))}
+                                <td className="border border-gray-700 px-4 py-2 flex space-x-4">
+                                    <button 
+                                        onClick={() => deleteRow(row.id)} 
+                                        className="text-red-500 hover:text-red-700 focus:outline-none"
+                                    >
+                                        <i className="fas fa-trash"></i>
+                                    </button>
+                                    <Link 
+                                        to={`/update-row/${entity_display_name}/${row.id}`} 
+                                        className="text-blue-500 hover:text-blue-700 focus:outline-none"
+                                    >
+                                        <i className="fas fa-pen"></i>
+                                    </Link>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+                <div className="flex justify-center">
+                    <Button text="Insert Row" goto={`/insert-row/${entity_display_name}`} subtle neon />
+                </div>
+            </div>
         </div>
     );
 }

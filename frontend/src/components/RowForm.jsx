@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSave } from '@fortawesome/free-solid-svg-icons';
 
 function RowForm() {
     const { entity_display_name } = useParams();
@@ -71,22 +73,27 @@ function RowForm() {
     };
 
     return (
-        <div>
-            <h2>RowForm: {entity_display_name}</h2>
-            <form onSubmit={handleSubmit}>
+        <div className="min-h-screen bg-black flex flex-col items-center justify-center">
+            <h2 className="text-2xl font-bold text-white mb-4">RowForm: {entity_display_name}</h2>
+            <form onSubmit={handleSubmit} className="bg-gray-800 p-8 rounded-lg shadow-md w-full max-w-md">
                 {schema.map((key) => (
-                    <div key={key}>
-                        <label htmlFor={key}>{key}</label>
+                    <div key={key} className="mb-4">
+                        <label htmlFor={key} className="block text-base font-medium text-gray-300 mb-1">{key}</label>
                         <input
                             type="text"
                             id={key}
                             name={key}
                             value={formData[key] || ''}
                             onChange={handleChange}
+                            className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-base border-gray-700 rounded-md bg-gray-700 text-white px-4 py-2"
+                            style={{ fontSize: '1rem', padding: '0.8rem' }} // Adjust font-size and padding
                         />
                     </div>
                 ))}
-                <button type="submit">Submit</button>
+                <button type="submit" className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 animate-neon">
+                    <FontAwesomeIcon icon={faSave} className="mr-2" />
+                    Submit
+                </button>
             </form>
         </div>
     );

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import Header from './Header'
+import Header from './Header';
 
 const ChangePasswordForm = () => {
   const [oldPassword, setOldPassword] = useState('');
@@ -41,41 +41,44 @@ const ChangePasswordForm = () => {
   };
 
   return (
-    <div>
-        <Header />
-        <form onSubmit={handleSubmit}>
-      <div>
-        <label htmlFor="oldPassword">Old Password:</label>
-        <input
-          type="password"
-          id="oldPassword"
-          value={oldPassword}
-          onChange={(e) => setOldPassword(e.target.value)}
-          required
-        />
-      </div>
-      <div>
-        <label htmlFor="newPassword">New Password:</label>
-        <input
-          type="password"
-          id="newPassword"
-          value={newPassword}
-          onChange={(e) => setNewPassword(e.target.value)}
-          required
-        />
-      </div>
-      <div>
-        <label htmlFor="confPassword">Confirm New Password:</label>
-        <input
-          type="password"
-          id="confPassword"
-          value={confPassword}
-          onChange={(e) => setConfPassword(e.target.value)}
-          required
-        />
-      </div>
-      <button type="submit">Change Password</button>
-    </form>
+    <div className="min-h-screen bg-black flex flex-col items-center justify-center">
+      <Header />
+      <form onSubmit={handleSubmit} className="bg-gray-800 p-8 rounded-lg shadow-md w-full max-w-md">
+        <div className="mb-4">
+          <label htmlFor="oldPassword" className="block text-base font-medium text-gray-300 mb-1">Old Password:</label>
+          <input
+            type="password"
+            id="oldPassword"
+            value={oldPassword}
+            onChange={(e) => setOldPassword(e.target.value)}
+            required
+            className="w-full p-2 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+        <div className="mb-4">
+          <label htmlFor="newPassword" className="block text-base font-medium text-gray-300 mb-1">New Password:</label>
+          <input
+            type="password"
+            id="newPassword"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+            required
+            className="w-full p-2 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+        <div className="mb-4">
+          <label htmlFor="confPassword" className="block text-base font-medium text-gray-300 mb-1">Confirm New Password:</label>
+          <input
+            type="password"
+            id="confPassword"
+            value={confPassword}
+            onChange={(e) => setConfPassword(e.target.value)}
+            required
+            className="w-full p-2 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+        <button type="submit" className="mt-4 py-2 px-4 bg-blue-500 hover:bg-blue-700 text-white font-bold rounded animate-neon">Change Password</button>
+      </form>
     </div>
   );
 };

@@ -14,7 +14,6 @@ import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import axios from 'axios';
 
-const pages = ['Create'];
 const settings = ['Change Password', 'Logout'];
 
 function ResponsiveAppBar() {
@@ -24,6 +23,7 @@ function ResponsiveAppBar() {
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
+
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
   };
@@ -42,7 +42,11 @@ function ResponsiveAppBar() {
   };
 
   const handleCreateClick = () => {
-    window.location.href = '/create-entity'; 
+    window.location.href = '/create-entity';
+  };
+
+  const handleDashboardClick = () => {
+    window.location.href = '/dashboard';
   };
 
   const handleLogout = async () => {
@@ -124,13 +128,15 @@ function ResponsiveAppBar() {
                 display: { xs: 'block', md: 'none' },
               }}
             >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
-                </MenuItem>
-              ))}
+              <MenuItem onClick={handleCreateClick}>
+                <Typography textAlign="center">Create</Typography>
+              </MenuItem>
+              <MenuItem onClick={handleDashboardClick}>
+                <Typography textAlign="center">Dashboard</Typography>
+              </MenuItem>
             </Menu>
           </Box>
+
           <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
           <Typography
             variant="h5"
@@ -150,22 +156,25 @@ function ResponsiveAppBar() {
           >
             LOGO
           </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
-              <Button
-                key={page}
-                onClick={handleCreateClick} // Change onClick event handler
-                sx={{ my: 2, color: 'white', display: 'block' }}
-              >
-                {page}
-              </Button>
-            ))}
-          </Box>
 
-          <Box sx={{ flexGrow: 0 }}>
+          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}></Box>
+
+          <Box sx={{ flexGrow: 0, display: 'flex', alignItems: 'center' }}>
+            <Button
+              onClick={handleCreateClick}
+              sx={{ my: 2, color: 'white', display: 'block' }}
+            >
+              Create
+            </Button>
+            <Button
+              onClick={handleDashboardClick}
+              sx={{ my: 2, color: 'white', display: 'block' }}
+            >
+              Dashboard
+            </Button>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                <Avatar alt="User Avatar" src="/static/images/avatar/2.jpg" />
               </IconButton>
             </Tooltip>
             <Menu

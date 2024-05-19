@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import Header from './Header'
+import Header from './Header';
+
 const DynamicForm = () => {
   const [entityDisplayName, setEntityDisplayName] = useState('');
   const [attributes, setAttributes] = useState([{ name: '', type: 'STRING' }]);
@@ -58,48 +59,64 @@ const DynamicForm = () => {
   };
 
   return (
-    <div>
-        <Header />
-      <h2>Dynamic Form</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Entity Display Name:</label>
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white flex flex-col items-center py-8">
+      <Header />
+      <h2 className="text-3xl font-light mb-8 animate-neon">Dynamic Form</h2>
+      <form onSubmit={handleSubmit} className="bg-gray-800 p-8 rounded-lg shadow-md w-full max-w-lg">
+        <div className="mb-6">
+          <label className="block mb-2 text-base font-light">Entity Display Name:</label>
           <input
             type="text"
             value={entityDisplayName}
             onChange={(e) => setEntityDisplayName(e.target.value)}
+            className="w-full p-2 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
-        <div>
+        <div className="mb-6">
           {attributes.map((attribute, index) => (
-            <div key={index}>
-              <label>Attribute Name:</label>
+            <div key={index} className="mb-4">
+              <label className="block mb-2 text-base font-light">Attribute Name:</label>
               <input
                 type="text"
                 name="name"
                 value={attribute.name}
                 onChange={(e) => handleAttributeChange(index, e)}
+                className="w-full p-2 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 mb-2"
               />
-              <label>Attribute Type:</label>
+              <label className="block mb-2 text-base font-light">Attribute Type:</label>
               <select
                 name="type"
                 value={attribute.type}
                 onChange={(e) => handleAttributeChange(index, e)}
+                className="w-full p-2 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 mb-2"
               >
                 <option value="STRING">String</option>
                 <option value="INTEGER">Integer</option>
                 <option value="DATEONLY">Date</option>
               </select>
-              <button type="button" onClick={() => handleDeleteAttribute(index)}>
+              <button
+                type="button"
+                onClick={() => handleDeleteAttribute(index)}
+                className="text-red-500 hover:text-red-700 font-semibold"
+              >
                 Delete
               </button>
             </div>
           ))}
-          <button type="button" onClick={handleAddAttribute}>
+          <button
+            type="button"
+            onClick={handleAddAttribute}
+            className="mt-4 py-2 px-4 bg-blue-500 hover:bg-blue-700 text-white font-bold rounded animate-neon"
+          >
             Add Attribute
           </button>
         </div>
-        <button type="submit">Submit</button>
+        <button
+          type="submit"
+          className="mt-4 py-2 px-4 bg-green-500 hover:bg-green-700 text-white font-bold rounded animate-neon-green"
+        >
+          Submit
+        </button>
       </form>
     </div>
   );
