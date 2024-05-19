@@ -11,9 +11,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useState } from 'react';
-
 import axios from 'axios';
-
 
 const defaultTheme = createTheme();
 
@@ -23,6 +21,7 @@ export default function SignUp() {
     email: '',
     hashed_password: ''
   });
+  const [error, setError] = useState('');
 
   const handleChange = (e) => {
       setUser({ ...user, [e.target.name]: e.target.value });
@@ -34,7 +33,11 @@ export default function SignUp() {
         await axios.post('http://localhost:8000/api/v1/users/register', user);
         window.location.href = '/login';
     } catch (error) {
-        throw error;
+        if (error.response) {
+          setError(error.response.data.message || 'Try a valid username and other credentials.');
+        } else {
+          setError('Try a valid username and other credentials.');
+        }
     }
   };
 
@@ -57,6 +60,11 @@ export default function SignUp() {
             Sign up
           </Typography>
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+            {error && (
+              <div className="mb-4 p-2 text-sm text-white bg-red-500 rounded">
+                {error}
+              </div>
+            )}
             <TextField
               margin="normal"
               required
@@ -76,7 +84,6 @@ export default function SignUp() {
               label="Email Address"
               name="email"
               autoComplete="email"
-              autoFocus
               onChange={handleChange}
             />
             <TextField
@@ -87,7 +94,7 @@ export default function SignUp() {
               label="Password"
               type="password"
               id="hashed_password"
-              autoComplete="current-hashed_password"
+              autoComplete="current-password"
               onChange={handleChange}
             />
             <Button

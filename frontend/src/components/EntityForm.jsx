@@ -91,8 +91,13 @@ const DynamicForm = () => {
                 className="w-full p-2 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 mb-2"
               >
                 <option value="STRING">String</option>
+                <option value="TEXT">Text</option>
                 <option value="INTEGER">Integer</option>
+                <option value="BIGINT">Big Integer</option>
+                <option value="FLOAT">Float</option>
+                <option value="DOUBLE">Double</option>
                 <option value="DATEONLY">Date</option>
+                <option value="BOOLEAN">Boolean</option>
               </select>
               <button
                 type="button"

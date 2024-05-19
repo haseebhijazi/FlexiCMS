@@ -16,7 +16,8 @@ import axios from 'axios';
 const defaultTheme = createTheme();
 
 export default function LogIn() {
-  const [credentials, setCredentials] = useState({ username: '', hashed_password: '', email: '' })
+  const [credentials, setCredentials] = useState({ username: '', hashed_password: '', email: null });
+  const [error, setError] = useState('');
 
   const handleChange = (e) => {
       setCredentials({ ...credentials, [e.target.name]: e.target.value });
@@ -26,14 +27,18 @@ export default function LogIn() {
     event.preventDefault();
     try {
       const response = await axios.post('http://localhost:8000/api/v1/users/login', credentials);
-      console.log(response.data.data.accessToken)
+      console.log(response.data.data.accessToken);
 
-      console.dir("Login Token: ", response.data.data.accessToken)
+      console.dir("Login Token: ", response.data.data.accessToken);
 
       localStorage.setItem('token', response.data.data.accessToken);
       window.location.href = '/entities';
     } catch (error) {
-      throw error
+      if (error.response && error.response.status === 401) {
+        setError('Incorrect username or password. Please try again.');
+      } else {
+        setError('An error occurred. Please try again later.');
+      }
     }
   };
 
@@ -56,6 +61,11 @@ export default function LogIn() {
             Log in
           </Typography>
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+            {error && (
+              <div className="mb-4 p-2 text-sm text-white bg-red-500 rounded">
+                {error}
+              </div>
+            )}
             <TextField
               margin="normal"
               required
@@ -75,7 +85,7 @@ export default function LogIn() {
               label="Password"
               type="password"
               id="hashed_password"
-              autoComplete="current-hashed_password"
+              autoComplete="current-password"
               onChange={handleChange}
             />
             <Button
