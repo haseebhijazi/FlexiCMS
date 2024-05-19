@@ -10,6 +10,7 @@ import EntityForm from './components/EntityForm.jsx';
 import ChangePasswordForm from './components/ChangePasswordForm.jsx';
 import EntityDashboard from './components/EntityDashboard.jsx';
 import RowForm from './components/RowForm.jsx';
+import UpdateRowForm from './components/UpdateRowForm.jsx';
 
 function App() {
 
@@ -24,6 +25,7 @@ function App() {
         <Route path="/change-password" element={<ProtectedRoute> <ChangePasswordForm /> </ProtectedRoute>} />
         <Route path="/entity/:entity_display_name" element={<ProtectedRoute> <EntityDashboard /> </ProtectedRoute>  } />
         <Route path="/insert-row/:entity_display_name" element={<ProtectedRoute> <RowForm /> </ProtectedRoute>} />
+        <Route path="/update-row/:entity_display_name/:row_id" element={<ProtectedRoute> <UpdateRowForm /> </ProtectedRoute>} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
 

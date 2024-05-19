@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom'; // Import Link
 import Header from './Header';
 import axios from 'axios';
-import Button from './Button';  // Import your Button component
+import Button from './Button';
 
 function EntityDashboard() {
     const { entity_display_name } = useParams();
@@ -100,6 +100,7 @@ function EntityDashboard() {
                             ))}
                             <td>
                                 <button onClick={() => deleteRow(row.id)}>Delete</button>
+                                <Link to={`/update-row/${entity_display_name}/${row.id}`}>Update</Link> {/* Update button */}
                             </td>
                         </tr>
                     ))}
