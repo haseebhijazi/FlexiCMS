@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Header from './Header';
 import axios from 'axios';
+import Button from './Button';  // Import your Button component
 
 function EntityDashboard() {
     const { entity_display_name } = useParams();
@@ -32,7 +33,7 @@ function EntityDashboard() {
         } catch (error) {
             console.error(error);
         }
-    }
+    };
 
     const tableStyle = {
         width: '100%',
@@ -56,6 +57,7 @@ function EntityDashboard() {
         <div>
             <Header />
             <h1>EntityDashboard: {entity_display_name}</h1>
+            <Button text="Insert Row" goto={`/insert-row/${entity_display_name}`} />
             <table style={tableStyle}>
                 <thead>
                     <tr>
@@ -75,7 +77,7 @@ function EntityDashboard() {
                 </tbody>
             </table>
         </div>
-    )
+    );
 }
 
 export default EntityDashboard;

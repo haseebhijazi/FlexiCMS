@@ -206,9 +206,55 @@ const deleteRow = asyncHandler( async (req, res) => {
     }
 })
 
+const fetchSchema = asyncHandler(async (req, res) => {
+    const { entity_display_name } = req.body;
+
+    if (!entity_display_name) {
+        throw new ApiError(401, "Entity Name not provided.");
+    }
+
+    const user = req?.user; // from jwt
+    if (!user) {
+        throw new ApiError(401, "Unauthorized Access.");
+    }
+    const user_id = user.user_id;
+
+    const entities = await Entity.findAll({
+        where: {
+            entity_display_name: entity_display_name,
+            user_id: user_id
+        }
+    });
+
+    if (entities.length <= 0) {
+        throw new ApiError(409, "Entity with this name does not exist for the user.");
+    }
+
+    const entity_logical_name = user.username + '_' + entity_display_name;
+
+    try {
+        const schema = await sequelize.queryInterface.describeTable(entity_logical_name);
+
+        const columns = Object.keys(schema);
+
+        return res.status(200).json(
+            new ApiResponse(
+                200,
+                columns,
+                "Schema fetched successfully!"
+            )
+        );
+    } catch (error) {
+        console.error("Error fetching schema:", error);
+        throw new ApiError(500, error.message || "Error fetching schema.");
+    }
+});
+
+
 export {  
     insertRow, 
     readRows, 
     updateRow,
-    deleteRow
+    deleteRow,
+    fetchSchema
 }
